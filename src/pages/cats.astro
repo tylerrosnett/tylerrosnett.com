@@ -1,0 +1,27 @@
+---
+import { Image } from 'astro:assets';
+import catsJun from '../assets/cats-jun.jpg';
+import catsOri from '../assets/cats-ori.jpg';
+import catsTogether1 from '../assets/cats-together-1.jpg';
+import catsTogether2 from '../assets/cats-together-2.jpg';
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="My Cats - Tyler Rosnett">
+  <div class="min-h-screen px-4 sm:px-6 lg:px-8 py-16">
+    <div class="max-w-4xl mx-auto">
+      <a href="/" class="text-ctp-mauve hover:text-ctp-lavender transition-colors mb-8 inline-block">
+        ← back
+      </a>
+
+      <h1 class="text-6xl font-bold text-ctp-text mb-12 text-center">my cats</h1>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+        <Image src={catsJun} alt="Jun" title="Jun" loading="eager" class="rounded-lg w-full object-cover aspect-square cursor-pointer" />
+        <Image src={catsOri} alt="Ori" title="Ori" loading="eager" class="rounded-lg w-full object-cover aspect-square cursor-pointer" />
+        <Image src={catsTogether1} alt="Jun and Ori" title="Jun & Ori" loading="eager" class="rounded-lg w-full object-cover aspect-square cursor-pointer" />
+        <Image src={catsTogether2} alt="Jun and Ori" title="Jun & Ori" loading="eager" class="rounded-lg w-full object-cover aspect-square cursor-pointer" />
+      </div>
+    </div>
+  </div>
+</Base>

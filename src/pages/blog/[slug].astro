@@ -1,0 +1,52 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({
+    params: { slug: post.id.replace(/\.md$/, '') },
+    props: { post },
+  }));
+}
+
+interface Props {
+  post: any;
+}
+
+const { post } = Astro.props;
+
+const formattedDate = new Intl.DateTimeFormat('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+}).format(post.data.date);
+---
+
+<Base title={`${post.data.title} - Tyler Rosnett`} description={post.data.description}>
+  <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <header class="mb-12">
+      <h1 class="text-5xl font-bold text-ctp-text mb-4">{post.data.title}</h1>
+      <p class="text-ctp-subtext0 text-lg">{formattedDate}</p>
+    </header>
+
+    <div class="prose max-w-none
+                    text-ctp-text
+                    [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:text-ctp-text [&_h2]:mt-8 [&_h2]:mb-4
+                    [&_h3]:text-xl [&_h3]:font-bold [&_h3]:text-ctp-text [&_h3]:mt-6 [&_h3]:mb-3
+                    [&_a]:text-ctp-mauve [&_a:hover]:text-ctp-lavender
+                    [&_p]:text-ctp-subtext0 [&_p]:leading-relaxed [&_p]:mb-4
+                    [&_ul]:list-disc [&_ul]:list-inside [&_ul]:space-y-2 [&_ul]:mb-4
+                    [&_ol]:list-decimal [&_ol]:list-inside [&_ol]:space-y-2 [&_ol]:mb-4
+                    [&_code]:bg-ctp-surface0 [&_code]:px-2 [&_code]:py-1 [&_code]:rounded [&_code]:text-ctp-peach [&_code]:text-sm
+                    [&_pre]:bg-ctp-surface0 [&_pre]:p-4 [&_pre]:rounded-lg [&_pre]:overflow-x-auto [&_pre]:mb-4">
+      <Fragment set:html={post.body} />
+    </div>
+
+    <nav class="mt-16 pt-8 border-t border-ctp-surface0">
+      <a href="/blog" class="text-ctp-mauve hover:text-ctp-lavender transition-colors">
+        ← Back to blog
+      </a>
+    </nav>
+  </article>
+</Base>

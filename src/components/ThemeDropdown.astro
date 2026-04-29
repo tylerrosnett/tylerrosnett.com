@@ -1,0 +1,71 @@
+---
+const themes = [
+  { name: 'latte', label: 'Latte 🌻', emoji: '🌻' },
+  { name: 'frappe', label: 'Frappé 🪴', emoji: '🪴' },
+  { name: 'macchiato', label: 'Macchiato 🌺', emoji: '🌺' },
+  { name: 'mocha', label: 'Mocha 🌿', emoji: '🌿' },
+];
+---
+
+<details class="relative">
+  <summary class="cursor-pointer flex items-center gap-2 px-3 py-2 rounded-md hover:opacity-75 transition-opacity" title="Catppuccin themes">
+    <span class="text-lg theme-emoji">🌿</span>
+  </summary>
+  <div class="absolute right-0 top-full mt-2 w-44 bg-ctp-surface0 border border-ctp-surface1 rounded-lg shadow-xl z-50">
+    <div class="px-4 py-2 text-sm text-ctp-subtext0 border-b border-ctp-surface1 rounded-t-lg">
+      Catppuccin
+    </div>
+    {
+      themes.map((theme) => (
+        <button
+          class="w-full text-left px-4 py-3 text-ctp-text hover:bg-ctp-surface1 transition-colors first:rounded-t-lg last:rounded-b-lg"
+          data-theme={theme.name}
+          onclick={`switchTheme('${theme.name}')`}
+        >
+          {theme.label}
+        </button>
+      ))
+    }
+  </div>
+</details>
+
+<script is:inline>
+  const themeMap = {
+    latte: '🌻',
+    frappe: '🪴',
+    macchiato: '🌺',
+    mocha: '🌿',
+  };
+
+  function updateEmojiDisplay(theme) {
+    const themeEmoji = document.querySelector('.theme-emoji');
+    if (themeEmoji) {
+      themeEmoji.textContent = themeMap[theme] || '🌿';
+    }
+  }
+
+  window.switchTheme = function(theme) {
+    const htmlElement = document.documentElement;
+    htmlElement.classList.remove('latte', 'frappe', 'macchiato', 'mocha');
+    htmlElement.classList.add(theme);
+    localStorage.setItem('theme', theme);
+    updateEmojiDisplay(theme);
+
+    // Close the dropdown
+    const details = document.querySelector('details');
+    if (details) details.open = false;
+  };
+
+  // Set initial emoji based on current theme
+  const htmlElement = document.documentElement;
+  const currentTheme = htmlElement.className.match(/(?:^|\s)(latte|frappe|macchiato|mocha)(?:\s|$)/)?.[1] || 'mocha';
+  updateEmojiDisplay(currentTheme);
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', (e) => {
+    const details = document.querySelector('details');
+    if (details && !details.contains(e.target)) {
+      details.open = false;
+    }
+  });
+</script>

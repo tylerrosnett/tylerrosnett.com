@@ -1,0 +1,27 @@
+---
+interface Props {
+  name: string;
+  description?: string;
+  url: string;
+  language?: string;
+  stars: number;
+  forks: number;
+}
+
+const { name, description, url, language, stars, forks } = Astro.props;
+---
+
+<a
+  href={url}
+  target="_blank"
+  rel="noopener noreferrer"
+  class="block p-6 rounded-lg border border-ctp-surface0 hover:border-ctp-mauve hover:bg-ctp-surface0 transition-all"
+>
+  <h3 class="text-lg font-semibold text-ctp-text mb-2">{name}</h3>
+  {description && <p class="text-sm text-ctp-subtext1 mb-4 line-clamp-2">{description}</p>}
+  <div class="flex items-center gap-4 text-xs text-ctp-subtext0">
+    {language && <span class="flex items-center gap-1">⊙ {language}</span>}
+    <span class="flex items-center gap-1">⭐ {stars.toLocaleString()}</span>
+    <span class="flex items-center gap-1">🍴 {forks.toLocaleString()}</span>
+  </div>
+</a>
