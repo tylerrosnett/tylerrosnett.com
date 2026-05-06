@@ -1,0 +1,18 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#1e1e2e"/>
+
+  <g transform="translate(60, 155) scale(1.6)">
+    <polygon points="128,20 30,140 128,180" fill="#cba6f7"/>
+    <polygon points="128,20 30,140 128,180 226,140"
+             fill="none" stroke="#cba6f7" stroke-width="3" stroke-linejoin="round"/>
+    <line x1="128" y1="20" x2="128" y2="180"
+          stroke="#cba6f7" stroke-width="3" stroke-linecap="round"/>
+  </g>
+
+  <g font-family="Inter, -apple-system, system-ui, sans-serif">
+    <text x="500" y="305" font-size="92" font-weight="700"
+          fill="#f5f5ff" letter-spacing="-2">Tyler Rosnett</text>
+    <text x="500" y="385" font-size="34" font-weight="500"
+          fill="#bac2de">Platform Engineer · Kubernetes &amp; Go</text>
+  </g>
+</svg>
