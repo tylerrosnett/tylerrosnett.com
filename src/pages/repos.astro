@@ -1,5 +1,31 @@
 ---
 import Base from '../layouts/Base.astro';
+import RepoCard from '../components/RepoCard.astro';
+
+interface Repo {
+  name: string;
+  description: string | null;
+  html_url: string;
+  language: string | null;
+  stargazers_count: number;
+  forks_count: number;
+  fork: boolean;
+}
+
+let repos: Repo[] = [];
+let loadError = false;
+
+try {
+  const response = await fetch('https://api.github.com/users/tylerrosnett/repos?sort=stars&per_page=30', {
+    headers: { 'User-Agent': 'tylerrosnett.com' },
+  });
+  if (!response.ok) throw new Error(`GitHub API ${response.status}`);
+  const all = (await response.json()) as Repo[];
+  repos = all.filter((r) => !r.fork).sort((a, b) => b.stargazers_count - a.stargazers_count);
+} catch (err) {
+  console.error('Failed to fetch repos at build time:', err);
+  loadError = true;
+}
 ---
 
 <Base title="Repos - Tyler Rosnett" description="My public GitHub repositories">
@@ -9,77 +35,23 @@ import Base from '../layouts/Base.astro';
       <p class="text-ctp-subtext0">public projects on github</p>
     </div>
 
-    <div id="repos-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div class="col-span-1 md:col-span-2 flex items-center justify-center py-12">
-        <p class="text-ctp-subtext0">loading repositories...</p>
+    {loadError ? (
+      <p class="text-ctp-red py-12">failed to load repositories.</p>
+    ) : repos.length === 0 ? (
+      <p class="text-ctp-subtext0 py-12">no public repositories found</p>
+    ) : (
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {repos.map((repo) => (
+          <RepoCard
+            name={repo.name}
+            description={repo.description ?? undefined}
+            url={repo.html_url}
+            language={repo.language ?? undefined}
+            stars={repo.stargazers_count}
+            forks={repo.forks_count}
+          />
+        ))}
       </div>
-    </div>
-
-    <div id="error-container" class="hidden text-ctp-red py-12">
-      <p>failed to load repositories. please try again later.</p>
-    </div>
+    )}
   </div>
 </Base>
-
-<script>
-  interface Repo {
-    name: string;
-    description: string | null;
-    html_url: string;
-    language: string | null;
-    stargazers_count: number;
-    forks_count: number;
-    fork: boolean;
-  }
-
-  async function loadRepos() {
-    try {
-      const response = await fetch('https://api.github.com/users/tylerrosnett/repos?sort=stars&per_page=30');
-      if (!response.ok) throw new Error('Failed to fetch repos');
-
-      const repos: Repo[] = await response.json();
-      const filtered = repos.filter((repo) => !repo.fork).sort((a, b) => b.stargazers_count - a.stargazers_count);
-
-      const container = document.getElementById('repos-container');
-      if (container) {
-        if (filtered.length === 0) {
-          container.innerHTML = '<p class="text-ctp-subtext0">no public repositories found</p>';
-          return;
-        }
-
-        container.innerHTML = filtered
-          .map(
-            (repo) => `
-          <a
-            href="${repo.html_url}"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="block p-6 rounded-lg bg-ctp-surface0 hover:bg-ctp-surface1 border border-ctp-surface1 hover:border-ctp-mauve transition-all"
-          >
-            <h3 class="text-lg font-semibold text-ctp-text mb-2">${repo.name}</h3>
-            ${repo.description ? `<p class="text-sm text-ctp-subtext0 mb-4 line-clamp-2">${repo.description}</p>` : ''}
-            <div class="flex items-center gap-4 text-xs text-ctp-subtext1">
-              ${repo.language ? `<span class="flex items-center gap-1">⊙ ${repo.language}</span>` : ''}
-              <span class="flex items-center gap-1">⭐ ${repo.stargazers_count.toLocaleString()}</span>
-              <span class="flex items-center gap-1">🍴 ${repo.forks_count.toLocaleString()}</span>
-            </div>
-          </a>
-        `
-          )
-          .join('');
-      }
-    } catch (error) {
-      console.error('Error loading repos:', error);
-      const errorContainer = document.getElementById('error-container');
-      const container = document.getElementById('repos-container');
-      if (errorContainer) errorContainer.classList.remove('hidden');
-      if (container) container.classList.add('hidden');
-    }
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', loadRepos);
-  } else {
-    loadRepos();
-  }
-</script>
