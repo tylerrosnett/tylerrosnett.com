@@ -24,9 +24,26 @@ const formattedDate = new Intl.DateTimeFormat('en-US', {
   month: 'long',
   day: 'numeric',
 }).format(post.data.date);
+
+const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+const blogPostingLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: post.data.title,
+  description: post.data.description,
+  datePublished: post.data.date.toISOString(),
+  author: { '@type': 'Person', name: 'Tyler Rosnett', url: 'https://tylerrosnett.com' },
+  mainEntityOfPage: { '@type': 'WebPage', '@id': canonical },
+};
 ---
 
-<Base title={`${post.data.title} - Tyler Rosnett`} description={post.data.description}>
+<Base
+  title={`${post.data.title} - Tyler Rosnett`}
+  description={post.data.description}
+  ogType="article"
+  publishedTime={post.data.date.toISOString()}
+>
+  <script type="application/ld+json" set:html={JSON.stringify(blogPostingLd)} slot="head" />
   <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
     <header class="mb-12">
       <h1 class="text-5xl font-bold text-ctp-text mb-4">{post.data.title}</h1>

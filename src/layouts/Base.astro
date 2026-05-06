@@ -6,9 +6,23 @@ import Footer from '../components/Footer.astro';
 interface Props {
   title?: string;
   description?: string;
+  image?: string;
+  ogType?: 'website' | 'article';
+  noindex?: boolean;
+  publishedTime?: string;
 }
 
-const { title = 'Tyler Rosnett', description = 'Software engineer & occasional blogger' } = Astro.props;
+const {
+  title = 'Tyler Rosnett',
+  description = 'Software engineer & occasional blogger',
+  image = '/og.png',
+  ogType = 'website',
+  noindex = false,
+  publishedTime,
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+const ogImageUrl = image ? new URL(image, Astro.site).toString() : undefined;
 ---
 
 <!doctype html>
@@ -19,6 +33,29 @@ const { title = 'Tyler Rosnett', description = 'Software engineer & occasional b
     <meta name="description" content={description} />
     <title>{title}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content="Tyler Rosnett" />
+    {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
+    {publishedTime && <meta property="article:published_time" content={publishedTime} />}
+    {ogType === 'article' && <meta property="article:author" content="Tyler Rosnett" />}
+
+    <meta name="twitter:card" content={ogImageUrl ? 'summary_large_image' : 'summary'} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    {ogImageUrl && <meta name="twitter:image" content={ogImageUrl} />}
+
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="Tyler Rosnett — Blog"
+      href={new URL('/rss.xml', Astro.site).toString()}
+    />
 
     <script is:inline>
       // Apply theme before first paint to prevent flash
@@ -26,6 +63,7 @@ const { title = 'Tyler Rosnett', description = 'Software engineer & occasional b
       document.documentElement.classList.add(savedTheme);
     </script>
 
+    <slot name="head" />
   </head>
   <body class="min-h-screen flex flex-col">
     <Header />
@@ -50,7 +88,7 @@ const { title = 'Tyler Rosnett', description = 'Software engineer & occasional b
         if (!link) return;
 
         const href = link.getAttribute('href');
-        if (!href || prefetchedUrls.has(href)) return;
+        if (!href) return;
 
         const url = new URL(href, window.location.href);
         if (
@@ -60,13 +98,15 @@ const { title = 'Tyler Rosnett', description = 'Software engineer & occasional b
         )
           return;
 
-        prefetchedUrls.add(href);
+        const key = url.pathname + url.search;
+        if (prefetchedUrls.has(key)) return;
+        prefetchedUrls.add(key);
 
         const addPrefetch = () => {
           const prefetchLink = document.createElement('link');
           prefetchLink.rel = 'prefetch';
           prefetchLink.as = 'document';
-          prefetchLink.href = url.pathname;
+          prefetchLink.href = key;
           document.head.appendChild(prefetchLink);
         };
 

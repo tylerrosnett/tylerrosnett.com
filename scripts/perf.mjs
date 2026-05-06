@@ -65,9 +65,9 @@ try {
           bytes: audits['total-byte-weight']?.numericValue,
           requests: audits['network-requests']?.details?.items?.length,
         });
-        const slug = page.replace(/\//g, '_') || '_root';
+        const slug = page === '/' ? 'root' : page.replace(/^\//, '').replace(/\//g, '_');
         await writeFile(
-          join(outDir, `${slug.replace(/^_/, '')}-${device}-run${i + 1}.json`),
+          join(outDir, `${slug}-${device}-run${i + 1}.json`),
           result.report,
         );
         process.stdout.write('.');
