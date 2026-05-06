@@ -27,12 +27,12 @@ import Logo from './Logo.astro';
     </div>
   </nav>
 
-  <div id="mobile-menu" class="hidden sm:hidden absolute top-full left-0 right-0 bg-ctp-base border-t border-ctp-surface0 z-50">
-    <div class="px-4 py-2 space-y-2 max-w-4xl mx-auto">
-      <a href="/" class="block px-3 py-2 text-ctp-text hover:text-ctp-mauve hover:bg-ctp-surface0 rounded transition-colors">about</a>
-      <a href="/blog" class="block px-3 py-2 text-ctp-text hover:text-ctp-mauve hover:bg-ctp-surface0 rounded transition-colors">blog</a>
-      <a href="/repos" class="block px-3 py-2 text-ctp-text hover:text-ctp-mauve hover:bg-ctp-surface0 rounded transition-colors">repos</a>
-      <a href="/cats" class="block px-3 py-2 text-ctp-text hover:text-ctp-pink hover:bg-ctp-surface0 rounded transition-colors">cats</a>
+  <div id="mobile-menu" class="hidden sm:hidden absolute top-full right-4 mt-2 w-44 bg-ctp-surface0 border border-ctp-surface1 rounded-lg shadow-xl z-50">
+    <div class="py-1">
+      <a href="/" class="block px-4 py-3 text-ctp-text hover:bg-ctp-surface1 first:rounded-t-lg transition-colors">about</a>
+      <a href="/blog" class="block px-4 py-3 text-ctp-text hover:bg-ctp-surface1 transition-colors">blog</a>
+      <a href="/repos" class="block px-4 py-3 text-ctp-text hover:bg-ctp-surface1 transition-colors">repos</a>
+      <a href="/cats" class="block px-4 py-3 text-ctp-text hover:bg-ctp-surface1 last:rounded-b-lg transition-colors">cats</a>
     </div>
   </div>
 </header>
@@ -51,18 +51,48 @@ import Logo from './Logo.astro';
 <script>
   const menuToggle = document.getElementById('menu-toggle');
   const mobileMenu = document.getElementById('mobile-menu');
+  const themeDetails = document.querySelector('header details');
 
   if (menuToggle && mobileMenu) {
-    menuToggle.addEventListener('click', () => {
+    menuToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
       mobileMenu.classList.toggle('hidden');
+      if (!mobileMenu.classList.contains('hidden') && themeDetails instanceof HTMLDetailsElement) {
+        themeDetails.open = false;
+      }
     });
 
-    // Close menu when a link is clicked
-    const links = mobileMenu.querySelectorAll('a');
-    links.forEach(link => {
+    mobileMenu.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', () => {
         mobileMenu.classList.add('hidden');
       });
     });
+
+    document.addEventListener('click', (e) => {
+      if (
+        !mobileMenu.classList.contains('hidden') &&
+        !mobileMenu.contains(e.target as Node) &&
+        !menuToggle.contains(e.target as Node)
+      ) {
+        mobileMenu.classList.add('hidden');
+      }
+    });
   }
+
+  if (themeDetails instanceof HTMLDetailsElement && mobileMenu) {
+    themeDetails.addEventListener('toggle', () => {
+      if (themeDetails.open) {
+        mobileMenu.classList.add('hidden');
+      }
+    });
+  }
+
+  document.querySelectorAll<HTMLAnchorElement>('header nav a, #mobile-menu a').forEach(link => {
+    link.addEventListener('click', (e) => {
+      if (link.pathname === location.pathname && !link.hash) {
+        e.preventDefault();
+        if (mobileMenu) mobileMenu.classList.add('hidden');
+      }
+    });
+  });
 </script>
