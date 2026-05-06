@@ -12,13 +12,28 @@ const { title = 'Tyler Rosnett', description = 'Software engineer & occasional b
 ---
 
 <!doctype html>
-<html lang="en" class="mocha">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
     <title>{title}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <script is:inline>
+      // Apply theme before first paint to prevent flash
+      const savedTheme = localStorage.getItem('theme') || 'mocha';
+      document.documentElement.classList.add(savedTheme);
+    </script>
+
+    <!-- Prefetch main pages for seamless navigation -->
+    <link rel="prefetch" href="/" as="document" />
+    <link rel="prefetch" href="/blog" as="document" />
+    <link rel="prefetch" href="/repos" as="document" />
+    <link rel="prefetch" href="/cats" as="document" />
+
+    <!-- Preload favicon -->
+    <link rel="preload" href="/favicon.svg" as="image" type="image/svg+xml" />
   </head>
   <body class="min-h-screen flex flex-col">
     <Header />
@@ -28,10 +43,26 @@ const { title = 'Tyler Rosnett', description = 'Software engineer & occasional b
     <Footer />
 
     <script>
-      // Restore theme from localStorage on page load
-      const savedTheme = localStorage.getItem('theme') || 'mocha';
-      document.documentElement.classList.remove('latte', 'frappe', 'macchiato', 'mocha');
-      document.documentElement.classList.add(savedTheme);
+      // Prefetch links on hover for instant navigation
+      const prefetchedUrls = new Set();
+
+      document.addEventListener('mouseover', (e) => {
+        const link = e.target.closest('a[href]');
+        if (!link) return;
+
+        const href = link.getAttribute('href');
+        if (!href || prefetchedUrls.has(href)) return;
+
+        // Only prefetch internal links
+        if (href.startsWith('/') || href.startsWith(window.location.origin)) {
+          prefetchedUrls.add(href);
+          const prefetchLink = document.createElement('link');
+          prefetchLink.rel = 'prefetch';
+          prefetchLink.as = 'document';
+          prefetchLink.href = href;
+          document.head.appendChild(prefetchLink);
+        }
+      });
     </script>
   </body>
 </html>
