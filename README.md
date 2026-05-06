@@ -1,6 +1,6 @@
 # tylerrosnett.com
 
-A personal website built with [Astro](https://docs.astro.build) and [Tailwind CSS](https://tailwindcss.com/docs), deployed on [Cloudflare Pages](https://developers.cloudflare.com/pages/).
+A personal website built with [Astro](https://docs.astro.build) and [Tailwind CSS](https://tailwindcss.com/docs), deployed on [Cloudflare Workers](https://developers.cloudflare.com/workers/) (static assets).
 
 ## Development
 
