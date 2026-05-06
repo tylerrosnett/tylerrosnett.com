@@ -11,7 +11,10 @@
     "preview": "wrangler dev",
     "deploy": "astro build && wrangler deploy",
     "deploy:preview": "astro build && wrangler versions upload",
-    "astro": "astro"
+    "astro": "astro",
+    "perf:serve": "astro preview --host 127.0.0.1 --port 4321",
+    "perf": "node scripts/perf.mjs",
+    "perf:assets": "node scripts/perf-assets.mjs"
   },
   "dependencies": {
     "astro": "^6.2.2"
@@ -19,6 +22,8 @@
   "devDependencies": {
     "@catppuccin/tailwindcss": "^1.0.0",
     "@tailwindcss/vite": "^4.2.4",
+    "chrome-launcher": "^1.2.1",
+    "lighthouse": "^13.2.0",
     "tailwindcss": "^4.2.4",
     "wrangler": "^4.0.0"
   },
