@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { getCollection } from 'astro:content';
+import { getCollection, render, type CollectionEntry } from 'astro:content';
 
 export const prerender = true;
 
@@ -13,10 +13,11 @@ export async function getStaticPaths() {
 }
 
 interface Props {
-  post: any;
+  post: CollectionEntry<'blog'>;
 }
 
 const { post } = Astro.props;
+const { Content } = await render(post);
 
 const formattedDate = new Intl.DateTimeFormat('en-US', {
   year: 'numeric',
@@ -42,7 +43,7 @@ const formattedDate = new Intl.DateTimeFormat('en-US', {
                     [&_ol]:list-decimal [&_ol]:list-inside [&_ol]:space-y-2 [&_ol]:mb-4
                     [&_code]:bg-ctp-surface0 [&_code]:px-2 [&_code]:py-1 [&_code]:rounded [&_code]:text-ctp-peach [&_code]:text-sm
                     [&_pre]:bg-ctp-surface0 [&_pre]:p-4 [&_pre]:rounded-lg [&_pre]:overflow-x-auto [&_pre]:mb-4">
-      <Fragment set:html={post.body} />
+      <Content />
     </div>
 
     <nav class="mt-16 pt-8 border-t border-ctp-surface0">
