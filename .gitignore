@@ -34,3 +34,6 @@ site/
 .dev.vars
 .dev.vars.*
 !.dev.vars.example
+
+# Lighthouse raw reports
+.perf/

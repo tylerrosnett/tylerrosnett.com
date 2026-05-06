@@ -26,14 +26,6 @@ const { title = 'Tyler Rosnett', description = 'Software engineer & occasional b
       document.documentElement.classList.add(savedTheme);
     </script>
 
-    <!-- Prefetch main pages for seamless navigation -->
-    <link rel="prefetch" href="/" as="document" />
-    <link rel="prefetch" href="/blog" as="document" />
-    <link rel="prefetch" href="/repos" as="document" />
-    <link rel="prefetch" href="/cats" as="document" />
-
-    <!-- Preload favicon -->
-    <link rel="preload" href="/favicon.svg" as="image" type="image/svg+xml" />
   </head>
   <body class="min-h-screen flex flex-col">
     <Header />
@@ -43,24 +35,45 @@ const { title = 'Tyler Rosnett', description = 'Software engineer & occasional b
     <Footer />
 
     <script>
-      // Prefetch links on hover for instant navigation
-      const prefetchedUrls = new Set();
+      const prefetchedUrls = new Set<string>();
+      const canPrefetch = HTMLLinkElement.supports?.('prefetch') ?? true;
+      const connection = (navigator as Navigator & {
+        connection?: { saveData?: boolean; effectiveType?: string };
+      }).connection;
+      const shouldPrefetch =
+        canPrefetch && !connection?.saveData && connection?.effectiveType !== '2g';
 
-      document.addEventListener('mouseover', (e) => {
-        const link = e.target.closest('a[href]');
+      document.addEventListener('pointerover', (e) => {
+        if (!shouldPrefetch) return;
+
+        const link = e.target instanceof Element ? e.target.closest('a[href]') : null;
         if (!link) return;
 
         const href = link.getAttribute('href');
         if (!href || prefetchedUrls.has(href)) return;
 
-        // Only prefetch internal links
-        if (href.startsWith('/') || href.startsWith(window.location.origin)) {
-          prefetchedUrls.add(href);
+        const url = new URL(href, window.location.href);
+        if (
+          url.origin !== window.location.origin ||
+          url.pathname === window.location.pathname ||
+          url.hash
+        )
+          return;
+
+        prefetchedUrls.add(href);
+
+        const addPrefetch = () => {
           const prefetchLink = document.createElement('link');
           prefetchLink.rel = 'prefetch';
           prefetchLink.as = 'document';
-          prefetchLink.href = href;
+          prefetchLink.href = url.pathname;
           document.head.appendChild(prefetchLink);
+        };
+
+        if ('requestIdleCallback' in window) {
+          window.requestIdleCallback(addPrefetch, { timeout: 1000 });
+        } else {
+          window.setTimeout(addPrefetch, 120);
         }
       });
     </script>
