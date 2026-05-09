@@ -7,7 +7,7 @@ const { variant = 'horizontal' } = Astro.props;
 ---
 
 {variant === 'icon' && (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" class="logo logo-icon" role="img" aria-label="tyler pyramid mark">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" class="logo logo-icon" aria-hidden="true" focusable="false">
     <polygon points="128,33 40,158 128,189" fill="currentColor"/>
     <polygon points="128,33 40,158 128,189 216,158" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/>
     <line x1="128" y1="33" x2="128" y2="189" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
