@@ -18,7 +18,7 @@ const ariaCurrent = (href: string) => (isCurrent(href) ? 'page' : undefined);
         <a href="/" aria-current={ariaCurrent('/')} class="text-ctp-text hover:text-ctp-mauve hover:underline underline-offset-4 transition-colors aria-[current=page]:text-ctp-mauve aria-[current=page]:underline">about</a>
         <a href="/blog" aria-current={ariaCurrent('/blog')} class="text-ctp-text hover:text-ctp-mauve hover:underline underline-offset-4 transition-colors aria-[current=page]:text-ctp-mauve aria-[current=page]:underline">blog</a>
         <a href="/repos" aria-current={ariaCurrent('/repos')} class="text-ctp-text hover:text-ctp-mauve hover:underline underline-offset-4 transition-colors aria-[current=page]:text-ctp-mauve aria-[current=page]:underline">repos</a>
-        <a href="/cats" aria-current={ariaCurrent('/cats')} class="text-ctp-text hover:text-ctp-pink hover:underline underline-offset-4 transition-colors aria-[current=page]:text-ctp-pink aria-[current=page]:underline">cats</a>
+        <a href="/cats" aria-current={ariaCurrent('/cats')} class="text-ctp-text hover:text-ctp-mauve hover:underline underline-offset-4 transition-colors aria-[current=page]:text-ctp-mauve aria-[current=page]:underline">cats</a>
       </div>
 
       <button id="menu-toggle" class="sm:hidden text-ctp-text hover:text-ctp-mauve transition-colors" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobile-menu">
@@ -36,7 +36,7 @@ const ariaCurrent = (href: string) => (isCurrent(href) ? 'page' : undefined);
       <a href="/" aria-current={ariaCurrent('/')} class="block px-4 py-3 text-ctp-text hover:bg-ctp-surface1 first:rounded-t-lg transition-colors aria-[current=page]:text-ctp-mauve">about</a>
       <a href="/blog" aria-current={ariaCurrent('/blog')} class="block px-4 py-3 text-ctp-text hover:bg-ctp-surface1 transition-colors aria-[current=page]:text-ctp-mauve">blog</a>
       <a href="/repos" aria-current={ariaCurrent('/repos')} class="block px-4 py-3 text-ctp-text hover:bg-ctp-surface1 transition-colors aria-[current=page]:text-ctp-mauve">repos</a>
-      <a href="/cats" aria-current={ariaCurrent('/cats')} class="block px-4 py-3 text-ctp-text hover:bg-ctp-surface1 last:rounded-b-lg transition-colors aria-[current=page]:text-ctp-pink">cats</a>
+      <a href="/cats" aria-current={ariaCurrent('/cats')} class="block px-4 py-3 text-ctp-text hover:bg-ctp-surface1 last:rounded-b-lg transition-colors aria-[current=page]:text-ctp-mauve">cats</a>
     </div>
   </div>
 </header>
