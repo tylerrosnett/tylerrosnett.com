@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets';
+import { Picture } from 'astro:assets';
 import tylerImg from '../assets/tyler.jpg';
 import Base from '../layouts/Base.astro';
 
@@ -20,7 +20,7 @@ const personLd = {
   <script type="application/ld+json" set:html={JSON.stringify(personLd)} slot="head" />
   <div class="flex items-center justify-center px-4 sm:px-6 lg:px-8 py-16">
     <div class="max-w-2xl w-full text-center">
-      <Image src={tylerImg} alt="Tyler Rosnett, platform engineer" loading="eager" fetchpriority="high" widths={[320, 640]} sizes="320px" class="w-80 h-80 rounded-full mx-auto mb-8 object-cover shadow-lg" />
+      <Picture src={tylerImg} formats={['avif', 'webp']} alt="Tyler Rosnett, platform engineer" loading="eager" fetchpriority="high" widths={[320, 640]} sizes="320px" class="w-80 h-80 rounded-full mx-auto mb-8 object-cover shadow-lg" />
       <h1 class="text-6xl font-bold text-ctp-text mb-6">hey, i'm tyler</h1>
       <div class="mb-12 text-center max-w-2xl mx-auto text-lg text-ctp-subtext0 leading-8">
         <p class="mb-4">
