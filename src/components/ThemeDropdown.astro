@@ -8,19 +8,20 @@ const themes = [
 ---
 
 <details class="relative">
-  <summary class="cursor-pointer flex items-center gap-2 px-3 py-2 rounded-md hover:opacity-75 transition-opacity" title="Catppuccin themes">
-    <span class="text-lg theme-emoji">🌿</span>
+  <summary class="cursor-pointer flex items-center gap-2 px-3 py-2 rounded-md hover:opacity-75 transition-opacity" title="Catppuccin themes" aria-label="Theme">
+    <span class="text-lg theme-emoji" aria-hidden="true">🌿</span>
   </summary>
-  <div class="absolute right-0 top-full mt-2 w-44 bg-ctp-surface0 border border-ctp-surface1 rounded-lg shadow-xl z-50">
-    <div class="px-4 py-2 text-sm text-ctp-subtext0 border-b border-ctp-surface1 rounded-t-lg">
+  <div class="absolute right-0 top-full mt-2 w-44 bg-ctp-surface0 border border-ctp-surface1 rounded-lg shadow-xl z-50" role="group" aria-label="Catppuccin themes">
+    <div class="px-4 py-2 text-sm text-ctp-subtext0 border-b border-ctp-surface1 rounded-t-lg" aria-hidden="true">
       Catppuccin
     </div>
     {
       themes.map((theme) => (
         <button
-          class="w-full text-left px-4 py-3 text-ctp-text hover:bg-ctp-surface1 transition-colors first:rounded-t-lg last:rounded-b-lg"
+          type="button"
+          class="theme-option w-full text-left px-4 py-3 text-ctp-text hover:bg-ctp-surface1 transition-colors first:rounded-t-lg last:rounded-b-lg aria-pressed:bg-ctp-surface1 aria-pressed:text-ctp-mauve"
           data-theme={theme.name}
-          onclick={`switchTheme('${theme.name}')`}
+          aria-pressed="false"
         >
           {theme.label}
         </button>
@@ -44,22 +45,35 @@ const themes = [
     }
   }
 
-  window.switchTheme = function(theme) {
+  function updatePressedState(theme) {
+    document.querySelectorAll('.theme-option').forEach((btn) => {
+      btn.setAttribute('aria-pressed', btn.getAttribute('data-theme') === theme ? 'true' : 'false');
+    });
+  }
+
+  function applyTheme(theme) {
     const htmlElement = document.documentElement;
     htmlElement.classList.remove('latte', 'frappe', 'macchiato', 'mocha');
     htmlElement.classList.add(theme);
     localStorage.setItem('theme', theme);
     updateEmojiDisplay(theme);
+    updatePressedState(theme);
 
-    // Close the dropdown
     const details = document.querySelector('details');
     if (details) details.open = false;
-  };
+  }
 
-  // Set initial emoji based on current theme
-  const htmlElement = document.documentElement;
-  const currentTheme = htmlElement.className.match(/(?:^|\s)(latte|frappe|macchiato|mocha)(?:\s|$)/)?.[1] || 'mocha';
+  // Set initial emoji + pressed state based on current theme
+  const currentTheme = document.documentElement.className.match(/(?:^|\s)(latte|frappe|macchiato|mocha)(?:\s|$)/)?.[1] || 'mocha';
   updateEmojiDisplay(currentTheme);
+  updatePressedState(currentTheme);
+
+  document.querySelectorAll('.theme-option').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const theme = btn.getAttribute('data-theme');
+      if (theme) applyTheme(theme);
+    });
+  });
 
   // Close dropdown when clicking outside
   document.addEventListener('click', (e) => {

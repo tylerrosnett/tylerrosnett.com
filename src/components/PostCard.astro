@@ -18,9 +18,7 @@ const formattedDate = new Intl.DateTimeFormat('en-US', {
   href={`/blog/${slug}`}
   class="block p-6 rounded-lg bg-ctp-surface0 hover:bg-ctp-surface1 border border-ctp-surface1 hover:border-ctp-mauve transition-all"
 >
-  <div class="flex items-start justify-between mb-2">
-    <h3 class="text-xl font-semibold text-ctp-text flex-1">{title}</h3>
-  </div>
+  <h2 class="text-xl font-semibold text-ctp-text mb-2">{title}</h2>
   <p class="text-sm text-ctp-subtext1 mb-3">{formattedDate}</p>
   <p class="text-ctp-subtext0">{description}</p>
 </a>

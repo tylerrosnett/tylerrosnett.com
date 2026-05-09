@@ -17,11 +17,19 @@ const { name, description, url, language, stars, forks } = Astro.props;
   rel="noopener noreferrer"
   class="block p-6 rounded-lg border border-ctp-surface0 hover:border-ctp-mauve hover:bg-ctp-surface0 transition-all"
 >
-  <h3 class="text-lg font-semibold text-ctp-text mb-2">{name}</h3>
+  <h2 class="text-lg font-semibold text-ctp-text mb-2">{name}</h2>
   {description && <p class="text-sm text-ctp-subtext1 mb-4 line-clamp-2">{description}</p>}
   <div class="flex items-center gap-4 text-xs text-ctp-subtext0">
-    {language && <span class="flex items-center gap-1">⊙ {language}</span>}
-    <span class="flex items-center gap-1">⭐ {stars.toLocaleString()}</span>
-    <span class="flex items-center gap-1">🍴 {forks.toLocaleString()}</span>
+    {language && (
+      <span class="flex items-center gap-1" aria-label={`Primary language: ${language}`}>
+        <span aria-hidden="true">⊙</span> {language}
+      </span>
+    )}
+    <span class="flex items-center gap-1" aria-label={`${stars.toLocaleString()} stars`}>
+      <span aria-hidden="true">⭐</span> {stars.toLocaleString()}
+    </span>
+    <span class="flex items-center gap-1" aria-label={`${forks.toLocaleString()} forks`}>
+      <span aria-hidden="true">🍴</span> {forks.toLocaleString()}
+    </span>
   </div>
 </a>

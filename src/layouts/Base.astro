@@ -66,11 +66,23 @@ const ogImageUrl = image ? new URL(image, Astro.site).toString() : undefined;
     <slot name="head" />
   </head>
   <body class="min-h-screen flex flex-col">
+    <a href="#main" class="skip-link">Skip to content</a>
     <Header />
-    <main class="flex-1">
+    <main id="main" class="flex-1">
       <slot />
     </main>
     <Footer />
+
+    <script>
+      const skipLink = document.querySelector<HTMLAnchorElement>('.skip-link');
+      const mainEl = document.getElementById('main');
+      skipLink?.addEventListener('click', () => {
+        if (!mainEl) return;
+        mainEl.setAttribute('tabindex', '-1');
+        mainEl.focus({ preventScroll: true });
+        mainEl.addEventListener('blur', () => mainEl.removeAttribute('tabindex'), { once: true });
+      });
+    </script>
 
     <script>
       const prefetchedUrls = new Set<string>();
