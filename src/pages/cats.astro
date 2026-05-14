@@ -8,7 +8,31 @@ import Base from '../layouts/Base.astro';
 
 const widths = [400, 600, 800, 1200];
 const sizes = '(min-width: 768px) 400px, 100vw';
-const imgClass = 'rounded-lg w-full object-cover aspect-square cursor-pointer';
+const imgClass = 'rounded-lg w-full object-cover aspect-square';
+
+const photos = [
+  {
+    src: catsJun,
+    caption: 'Jun',
+    alt: 'Jun, a longhaired cream-white cat with peachy ears, vivid blue eyes, and a pink nose, standing on hardwood and looking up at the camera.',
+    fetchpriority: 'high' as const,
+  },
+  {
+    src: catsOri,
+    caption: 'Ori',
+    alt: 'Ori, a longhaired brown tabby with a white face and chest, perched on top of a tall scratching post against a beige wall.',
+  },
+  {
+    src: catsTogether1,
+    caption: 'Jun & Ori',
+    alt: 'Ori the tabby standing behind Jun the cream cat, who lies stretched out across a wooden desk by a curtain-covered window.',
+  },
+  {
+    src: catsTogether2,
+    caption: 'Jun & Ori',
+    alt: 'Jun and Ori in matching loaf poses on a desk between a computer monitor and a mechanical keyboard, both looking straight at the camera.',
+  },
+];
 ---
 
 <Base title="My Cats - Tyler Rosnett">
@@ -18,10 +42,21 @@ const imgClass = 'rounded-lg w-full object-cover aspect-square cursor-pointer';
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-      <Picture src={catsJun} formats={['avif', 'webp']} widths={widths} sizes={sizes} alt="Jun" title="Jun" loading="eager" fetchpriority="high" class={imgClass} />
-      <Picture src={catsOri} formats={['avif', 'webp']} widths={widths} sizes={sizes} alt="Ori" title="Ori" loading="eager" class={imgClass} />
-      <Picture src={catsTogether1} formats={['avif', 'webp']} widths={widths} sizes={sizes} alt="Jun and Ori" title="Jun & Ori" loading="eager" class={imgClass} />
-      <Picture src={catsTogether2} formats={['avif', 'webp']} widths={widths} sizes={sizes} alt="Jun and Ori" title="Jun & Ori" loading="eager" class={imgClass} />
+      {photos.map((photo) => (
+        <figure>
+          <Picture
+            src={photo.src}
+            formats={['avif', 'webp']}
+            widths={widths}
+            sizes={sizes}
+            alt={photo.alt}
+            loading="eager"
+            fetchpriority={photo.fetchpriority}
+            class={imgClass}
+          />
+          <figcaption class="pt-2 text-sm text-ctp-subtext0 text-center">{photo.caption}</figcaption>
+        </figure>
+      ))}
     </div>
   </div>
 </Base>
