@@ -68,8 +68,12 @@ const ariaCurrent = (href: string) => (isCurrent(href) ? 'page' : undefined);
       e.stopPropagation();
       const willOpen = mobileMenu.classList.contains('hidden');
       setMenuOpen(willOpen);
-      if (willOpen && themeDetails instanceof HTMLDetailsElement) {
-        themeDetails.open = false;
+      if (willOpen) {
+        if (themeDetails instanceof HTMLDetailsElement) {
+          themeDetails.open = false;
+        }
+        const firstLink = mobileMenu.querySelector('a');
+        if (firstLink instanceof HTMLElement) firstLink.focus();
       }
     });
 
