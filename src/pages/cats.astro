@@ -6,16 +6,11 @@ import catsTogether1 from '../assets/cats-together-1.jpg';
 import catsTogether2 from '../assets/cats-together-2.jpg';
 import Base from '../layouts/Base.astro';
 
-const widths = [400, 600, 800, 1200];
-const sizes = '(min-width: 768px) 400px, 100vw';
-const imgClass = 'rounded-lg w-full object-cover aspect-square';
-
 const photos = [
   {
     src: catsJun,
     caption: 'Jun',
     alt: 'Jun, a longhaired cream-white cat with peachy ears, vivid blue eyes, and a pink nose, standing on hardwood and looking up at the camera.',
-    fetchpriority: 'high' as const,
   },
   {
     src: catsOri,
@@ -41,22 +36,369 @@ const photos = [
       <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-ctp-text pb-6">my cats</h1>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-      {photos.map((photo) => (
-        <figure>
+    <section class="slideshow" aria-label="Cat photo slideshow">
+      <div class="slide-frame">
+        {photos.map((photo, i) => (
+          <button
+            type="button"
+            class="slide"
+            data-index={i}
+            data-active={i === 0 ? '' : undefined}
+            aria-label={`Open full-size view of ${photo.caption}`}
+          >
+            <span class="numbertext" aria-hidden="true">{i + 1} / {photos.length}</span>
+            <Picture
+              src={photo.src}
+              formats={['avif', 'webp']}
+              widths={[800, 1200, 1600]}
+              sizes="(min-width: 896px) 832px, 100vw"
+              alt={photo.alt}
+              loading={i === 0 ? 'eager' : 'lazy'}
+              fetchpriority={i === 0 ? 'high' : undefined}
+              class="slide-image"
+            />
+          </button>
+        ))}
+        <button type="button" class="slide-nav slide-prev" aria-label="Previous photo">&#10094;</button>
+        <button type="button" class="slide-nav slide-next" aria-label="Next photo">&#10095;</button>
+      </div>
+
+      <p class="slide-caption" aria-live="polite">{photos[0]?.caption}</p>
+
+      <div class="thumb-row" role="group" aria-label="Choose a photo">
+        {photos.map((photo, i) => (
+          <button
+            type="button"
+            class="thumb"
+            data-index={i}
+            data-caption={photo.caption}
+            aria-current={i === 0 ? 'true' : undefined}
+            aria-label={`Show ${photo.caption}`}
+          >
+            <Picture
+              src={photo.src}
+              formats={['avif', 'webp']}
+              widths={[160, 240, 320]}
+              sizes="200px"
+              alt=""
+              loading="lazy"
+              class="thumb-image"
+            />
+          </button>
+        ))}
+      </div>
+    </section>
+  </div>
+
+  <dialog id="cats-lightbox" class="cats-lightbox" aria-label="Cat photos">
+    <div class="lightbox-slides">
+      {photos.map((photo, i) => (
+        <figure class="lightbox-slide" data-index={i} data-active={i === 0 ? '' : undefined}>
           <Picture
             src={photo.src}
             formats={['avif', 'webp']}
-            widths={widths}
-            sizes={sizes}
+            widths={[1200, 1600, 2000]}
+            sizes="100vw"
             alt={photo.alt}
-            loading="eager"
-            fetchpriority={photo.fetchpriority}
-            class={imgClass}
+            loading="lazy"
+            class="lightbox-image"
           />
-          <figcaption class="pt-2 text-sm text-ctp-subtext0 text-center">{photo.caption}</figcaption>
+          <figcaption class="lightbox-caption">{photo.caption}</figcaption>
         </figure>
       ))}
     </div>
-  </div>
+    <button type="button" class="lightbox-btn lightbox-close" aria-label="Close">×</button>
+    <button type="button" class="lightbox-btn lightbox-prev" aria-label="Previous photo">‹</button>
+    <button type="button" class="lightbox-btn lightbox-next" aria-label="Next photo">›</button>
+  </dialog>
 </Base>
+
+<style>
+  .slideshow {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .slide-frame {
+    position: relative;
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+
+  .slide {
+    display: none;
+    position: relative;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .slide[data-active] {
+    display: block;
+  }
+
+  .slide-image {
+    width: 100%;
+    height: auto;
+    max-height: 75vh;
+    object-fit: contain;
+    display: block;
+  }
+
+  .numbertext {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    padding: 0.125rem 0.5rem;
+    font-size: 0.75rem;
+    color: white;
+    background: rgb(0 0 0 / 0.5);
+    border-radius: 0.25rem;
+    z-index: 2;
+    font-family: ui-monospace, monospace;
+  }
+
+  .slide-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2.5rem;
+    height: 3rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgb(0 0 0 / 0.4);
+    color: white;
+    font-size: 1.25rem;
+    border: 0;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    z-index: 3;
+    transition: background 150ms;
+  }
+
+  .slide-nav:hover {
+    background: rgb(0 0 0 / 0.7);
+  }
+
+  .slide-prev { left: 0.5rem; }
+  .slide-next { right: 0.5rem; }
+
+  .slide-caption {
+    text-align: center;
+    color: var(--catppuccin-color-subtext0);
+    font-size: 0.875rem;
+    min-height: 1.25rem;
+  }
+
+  .thumb-row {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .thumb {
+    flex: 1;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    opacity: 0.6;
+    transition: opacity 150ms;
+  }
+
+  .thumb:hover {
+    opacity: 0.85;
+  }
+
+  .thumb[aria-current='true'] {
+    opacity: 1;
+  }
+
+  .thumb-image {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    display: block;
+  }
+
+  .cats-lightbox {
+    width: 100vw;
+    height: 100vh;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: rgb(0 0 0 / 0.95);
+    color: var(--catppuccin-color-text);
+  }
+
+  .cats-lightbox::backdrop {
+    background: rgb(0 0 0 / 0.95);
+  }
+
+  .lightbox-slides {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+
+  .lightbox-slide {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  .lightbox-slide[data-active] {
+    display: flex;
+  }
+
+  .lightbox-image {
+    max-width: 100%;
+    max-height: calc(100vh - 6rem);
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 0.5rem;
+  }
+
+  .lightbox-caption {
+    font-size: 0.875rem;
+    color: var(--catppuccin-color-subtext0);
+    text-align: center;
+  }
+
+  .lightbox-btn {
+    position: absolute;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 9999px;
+    background: var(--catppuccin-color-surface0);
+    color: var(--catppuccin-color-text);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    line-height: 1;
+    border: 0;
+    cursor: pointer;
+  }
+
+  .lightbox-btn:hover {
+    background: var(--catppuccin-color-surface1);
+  }
+
+  .lightbox-close { top: 1rem; right: 1rem; }
+  .lightbox-prev  { left: 1rem; top: 50%; transform: translateY(-50%); }
+  .lightbox-next  { right: 1rem; top: 50%; transform: translateY(-50%); }
+</style>
+
+<script>
+  const slides = Array.from(document.querySelectorAll<HTMLElement>('.slide'));
+  const thumbs = Array.from(document.querySelectorAll<HTMLButtonElement>('.thumb'));
+  const captionEl = document.querySelector<HTMLElement>('.slide-caption');
+  const slidePrev = document.querySelector<HTMLButtonElement>('.slide-prev');
+  const slideNext = document.querySelector<HTMLButtonElement>('.slide-next');
+
+  const dialog = document.getElementById('cats-lightbox');
+  const lightboxSlides = Array.from(document.querySelectorAll<HTMLElement>('.lightbox-slide'));
+  const lightboxClose = document.querySelector<HTMLButtonElement>('.lightbox-close');
+  const lightboxPrev = document.querySelector<HTMLButtonElement>('.lightbox-prev');
+  const lightboxNext = document.querySelector<HTMLButtonElement>('.lightbox-next');
+
+  if (slides.length > 0 && thumbs.length === slides.length) {
+    let activeIndex = 0;
+
+    const show = (index: number) => {
+      activeIndex = ((index % slides.length) + slides.length) % slides.length;
+      slides.forEach((s, i) => toggleAttr(s, 'data-active', i === activeIndex));
+      thumbs.forEach((t, i) => toggleAttr(t, 'aria-current', i === activeIndex, 'true'));
+      lightboxSlides.forEach((s, i) => toggleAttr(s, 'data-active', i === activeIndex));
+      if (captionEl) {
+        captionEl.textContent = thumbs[activeIndex]?.getAttribute('data-caption') ?? '';
+      }
+    };
+
+    function toggleAttr(el: HTMLElement, attr: string, on: boolean, value = '') {
+      if (on) el.setAttribute(attr, value);
+      else el.removeAttribute(attr);
+    }
+
+    const openLightboxAt = (index: number) => {
+      show(index);
+      if (dialog instanceof HTMLDialogElement) dialog.showModal();
+    };
+
+    slides.forEach((slide) => {
+      slide.addEventListener('click', () => {
+        const i = Number(slide.getAttribute('data-index') ?? 0);
+        openLightboxAt(i);
+      });
+      slide.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          show(activeIndex - 1);
+          slides[activeIndex]?.focus();
+        } else if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          show(activeIndex + 1);
+          slides[activeIndex]?.focus();
+        }
+      });
+    });
+
+    thumbs.forEach((thumb) => {
+      thumb.addEventListener('click', () => {
+        const i = Number(thumb.getAttribute('data-index') ?? 0);
+        show(i);
+      });
+      thumb.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          show(activeIndex - 1);
+          thumbs[activeIndex]?.focus();
+        } else if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          show(activeIndex + 1);
+          thumbs[activeIndex]?.focus();
+        }
+      });
+    });
+
+    slidePrev?.addEventListener('click', () => show(activeIndex - 1));
+    slideNext?.addEventListener('click', () => show(activeIndex + 1));
+
+    if (dialog instanceof HTMLDialogElement) {
+      lightboxClose?.addEventListener('click', () => dialog.close());
+      lightboxPrev?.addEventListener('click', () => show(activeIndex - 1));
+      lightboxNext?.addEventListener('click', () => show(activeIndex + 1));
+
+      document.addEventListener('keydown', (e) => {
+        if (!dialog.open) return;
+        if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          show(activeIndex - 1);
+        } else if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          show(activeIndex + 1);
+        }
+      });
+
+      dialog.addEventListener('click', (e) => {
+        if (e.target === dialog) dialog.close();
+      });
+    }
+  }
+</script>
