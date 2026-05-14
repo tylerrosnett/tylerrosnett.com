@@ -46,13 +46,13 @@ const blogPostingLd = {
   <script type="application/ld+json" set:html={JSON.stringify(blogPostingLd)} slot="head" />
   <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
     <header class="mb-12">
-      <h1 class="text-5xl font-bold text-ctp-text mb-4">{post.data.title}</h1>
+      <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-ctp-text mb-4">{post.data.title}</h1>
       <p class="text-ctp-subtext0 text-lg">{formattedDate}</p>
     </header>
 
     <div class="prose-ctp max-w-none
-                    [&_h2]:text-2xl [&_h2]:mt-8 [&_h2]:mb-4
-                    [&_h3]:text-xl [&_h3]:mt-6 [&_h3]:mb-3
+                    [&_h2]:text-xl sm:[&_h2]:text-2xl [&_h2]:mt-8 [&_h2]:mb-4
+                    [&_h3]:text-lg sm:[&_h3]:text-xl [&_h3]:mt-6 [&_h3]:mb-3
                     [&_p]:mb-4
                     [&_ul]:space-y-2 [&_ul]:mb-4
                     [&_ol]:space-y-2 [&_ol]:mb-4
