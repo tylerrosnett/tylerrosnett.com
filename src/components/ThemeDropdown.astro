@@ -30,8 +30,12 @@ const themes = [
   </div>
 </details>
 
-<script is:inline>
-  const themeMap = {
+<script>
+  import { createMenuKeyHandler } from '../scripts/menu-keyboard';
+
+  type ThemeName = 'latte' | 'frappe' | 'macchiato' | 'mocha';
+
+  const themeMap: Record<ThemeName, string> = {
     latte: '🌻',
     frappe: '🪴',
     macchiato: '🌺',
@@ -39,48 +43,57 @@ const themes = [
   };
 
   const dropdown = document.getElementById('theme-dropdown');
-  const themeEmoji = dropdown?.querySelector('.theme-emoji');
-  const themeOptions = dropdown?.querySelectorAll('.theme-option') ?? [];
+  if (dropdown instanceof HTMLDetailsElement) {
+    const summary = dropdown.querySelector<HTMLElement>('summary');
+    const themeEmoji = dropdown.querySelector<HTMLElement>('.theme-emoji');
+    const themeOptions = Array.from(dropdown.querySelectorAll<HTMLButtonElement>('.theme-option'));
 
-  function updateEmojiDisplay(theme) {
-    if (themeEmoji) {
-      themeEmoji.textContent = themeMap[theme] || '🌿';
-    }
-  }
+    const updateEmojiDisplay = (theme: string) => {
+      if (themeEmoji) themeEmoji.textContent = themeMap[theme as ThemeName] || '🌿';
+    };
 
-  function updatePressedState(theme) {
-    themeOptions.forEach((btn) => {
-      btn.setAttribute('aria-pressed', btn.getAttribute('data-theme') === theme ? 'true' : 'false');
-    });
-  }
+    const updatePressedState = (theme: string) => {
+      themeOptions.forEach((btn) => {
+        btn.setAttribute('aria-pressed', btn.getAttribute('data-theme') === theme ? 'true' : 'false');
+      });
+    };
 
-  function applyTheme(theme) {
-    const htmlElement = document.documentElement;
-    htmlElement.classList.remove('latte', 'frappe', 'macchiato', 'mocha');
-    htmlElement.classList.add(theme);
-    localStorage.setItem('theme', theme);
-    updateEmojiDisplay(theme);
-    updatePressedState(theme);
-
-    if (dropdown) dropdown.open = false;
-  }
-
-  // Set initial emoji + pressed state based on current theme
-  const currentTheme = document.documentElement.className.match(/(?:^|\s)(latte|frappe|macchiato|mocha)(?:\s|$)/)?.[1] || 'mocha';
-  updateEmojiDisplay(currentTheme);
-  updatePressedState(currentTheme);
-
-  themeOptions.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const theme = btn.getAttribute('data-theme');
-      if (theme) applyTheme(theme);
-    });
-  });
-
-  // Close dropdown when clicking outside
-  document.addEventListener('click', (e) => {
-    if (dropdown && !dropdown.contains(e.target)) {
+    const applyTheme = (theme: string) => {
+      document.documentElement.classList.remove('latte', 'frappe', 'macchiato', 'mocha');
+      document.documentElement.classList.add(theme);
+      localStorage.setItem('theme', theme);
+      updateEmojiDisplay(theme);
+      updatePressedState(theme);
       dropdown.open = false;
-    }
-  });
+    };
+
+    const currentTheme =
+      document.documentElement.className.match(/(?:^|\s)(latte|frappe|macchiato|mocha)(?:\s|$)/)?.[1] ||
+      'mocha';
+    updateEmojiDisplay(currentTheme);
+    updatePressedState(currentTheme);
+
+    const keyHandler = createMenuKeyHandler(themeOptions, {
+      onEscape: () => {
+        dropdown.open = false;
+        summary?.focus();
+      },
+    });
+
+    themeOptions.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const theme = btn.getAttribute('data-theme');
+        if (theme) applyTheme(theme);
+      });
+      btn.addEventListener('keydown', keyHandler);
+    });
+
+    dropdown.addEventListener('toggle', () => {
+      if (dropdown.open) themeOptions[0]?.focus();
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!dropdown.contains(e.target as Node)) dropdown.open = false;
+    });
+  }
 </script>
