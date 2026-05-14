@@ -53,67 +53,134 @@ const ariaCurrent = (href: string) => (isCurrent(href) ? 'page' : undefined);
 </style>
 
 <script>
-  const menuToggle = document.getElementById('menu-toggle');
-  const mobileMenu = document.getElementById('mobile-menu');
+  interface MobileMenuOptions {
+    onOpen?: () => void;
+  }
+
+  class MobileMenu {
+    private toggle: HTMLButtonElement;
+    private menu: HTMLElement;
+    private items: HTMLAnchorElement[];
+    private onOpenCallback?: () => void;
+
+    constructor(toggle: HTMLButtonElement, menu: HTMLElement, options: MobileMenuOptions = {}) {
+      this.toggle = toggle;
+      this.menu = menu;
+      this.items = Array.from(menu.querySelectorAll<HTMLAnchorElement>('a'));
+      this.onOpenCallback = options.onOpen;
+
+      this.toggle.addEventListener('click', this.onToggleClick);
+      this.items.forEach((item) => {
+        item.addEventListener('click', this.onItemClick);
+        item.addEventListener('keydown', this.onItemKeydown);
+      });
+      document.addEventListener('click', this.onDocClick);
+      document.addEventListener('keydown', this.onDocKeydown);
+    }
+
+    get isOpen(): boolean {
+      return !this.menu.classList.contains('hidden');
+    }
+
+    open(): void {
+      if (this.isOpen) return;
+      this.onOpenCallback?.();
+      this.menu.classList.remove('hidden');
+      this.toggle.setAttribute('aria-expanded', 'true');
+      this.items[0]?.focus();
+    }
+
+    close(restoreFocus = true): void {
+      if (!this.isOpen) return;
+      this.menu.classList.add('hidden');
+      this.toggle.setAttribute('aria-expanded', 'false');
+      if (restoreFocus) this.toggle.focus();
+    }
+
+    private onToggleClick = (e: MouseEvent): void => {
+      e.stopPropagation();
+      this.isOpen ? this.close() : this.open();
+    };
+
+    private onItemClick = (): void => {
+      // Don't restore focus to the toggle — the link is about to navigate.
+      this.close(false);
+    };
+
+    private onItemKeydown = (e: KeyboardEvent): void => {
+      const idx = this.items.indexOf(e.target as HTMLAnchorElement);
+      if (idx === -1) return;
+      const last = this.items.length - 1;
+
+      switch (e.key) {
+        case 'ArrowDown':
+          e.preventDefault();
+          this.items[(idx + 1) % this.items.length]?.focus();
+          break;
+        case 'ArrowUp':
+          e.preventDefault();
+          this.items[(idx - 1 + this.items.length) % this.items.length]?.focus();
+          break;
+        case 'Home':
+          e.preventDefault();
+          this.items[0]?.focus();
+          break;
+        case 'End':
+          e.preventDefault();
+          this.items[last]?.focus();
+          break;
+        case 'Tab':
+          // Trap focus within the open menu.
+          if (e.shiftKey && idx === 0) {
+            e.preventDefault();
+            this.items[last]?.focus();
+          } else if (!e.shiftKey && idx === last) {
+            e.preventDefault();
+            this.items[0]?.focus();
+          }
+          break;
+      }
+    };
+
+    private onDocClick = (e: MouseEvent): void => {
+      if (!this.isOpen) return;
+      const target = e.target as Node;
+      if (!this.menu.contains(target) && !this.toggle.contains(target)) {
+        this.close(false);
+      }
+    };
+
+    private onDocKeydown = (e: KeyboardEvent): void => {
+      if (e.key === 'Escape' && this.isOpen) this.close();
+    };
+  }
+
+  const toggleEl = document.getElementById('menu-toggle');
+  const menuEl = document.getElementById('mobile-menu');
   const themeDetails = document.getElementById('theme-dropdown');
 
-  const setMenuOpen = (open: boolean) => {
-    if (!mobileMenu || !menuToggle) return;
-    mobileMenu.classList.toggle('hidden', !open);
-    menuToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-  };
+  const mobileMenu =
+    toggleEl instanceof HTMLButtonElement && menuEl instanceof HTMLElement
+      ? new MobileMenu(toggleEl, menuEl, {
+          onOpen: () => {
+            if (themeDetails instanceof HTMLDetailsElement) themeDetails.open = false;
+          },
+        })
+      : null;
 
-  if (menuToggle && mobileMenu) {
-    menuToggle.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const willOpen = mobileMenu.classList.contains('hidden');
-      setMenuOpen(willOpen);
-      if (willOpen) {
-        if (themeDetails instanceof HTMLDetailsElement) {
-          themeDetails.open = false;
-        }
-        const firstLink = mobileMenu.querySelector('a');
-        if (firstLink instanceof HTMLElement) firstLink.focus();
-      }
-    });
-
-    mobileMenu.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        setMenuOpen(false);
-      });
-    });
-
-    document.addEventListener('click', (e) => {
-      if (
-        !mobileMenu.classList.contains('hidden') &&
-        !mobileMenu.contains(e.target as Node) &&
-        !menuToggle.contains(e.target as Node)
-      ) {
-        setMenuOpen(false);
-      }
-    });
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && !mobileMenu.classList.contains('hidden')) {
-        setMenuOpen(false);
-        menuToggle.focus();
-      }
-    });
-  }
-
-  if (themeDetails instanceof HTMLDetailsElement && mobileMenu) {
+  // Close the mobile menu when the theme dropdown opens.
+  if (themeDetails instanceof HTMLDetailsElement) {
     themeDetails.addEventListener('toggle', () => {
-      if (themeDetails.open) {
-        setMenuOpen(false);
-      }
+      if (themeDetails.open) mobileMenu?.close(false);
     });
   }
 
-  document.querySelectorAll<HTMLAnchorElement>('header nav a, #mobile-menu a').forEach(link => {
+  // Suppress redundant navigation when a nav link targets the current page.
+  document.querySelectorAll<HTMLAnchorElement>('header nav a').forEach((link) => {
     link.addEventListener('click', (e) => {
       if (link.pathname === location.pathname && !link.hash) {
         e.preventDefault();
-        setMenuOpen(false);
+        mobileMenu?.close(false);
       }
     });
   });
