@@ -7,11 +7,11 @@ const themes = [
 ];
 ---
 
-<details class="relative">
+<details id="theme-dropdown">
   <summary class="cursor-pointer inline-flex items-center justify-center h-10 px-3 rounded-md hover:opacity-75 transition-opacity" title="Catppuccin themes" aria-label="Theme">
     <span class="text-lg theme-emoji" aria-hidden="true">🌿</span>
   </summary>
-  <div class="absolute right-0 top-[calc(100%+0.5rem)] w-44 bg-ctp-surface0 border border-ctp-surface1 rounded-lg shadow-xl z-50" role="group" aria-label="Catppuccin themes">
+  <div class="absolute right-4 sm:right-6 lg:right-8 top-[calc(100%+0.5rem)] w-44 bg-ctp-surface0 border border-ctp-surface1 rounded-lg shadow-xl z-50" role="group" aria-label="Catppuccin themes">
     <div class="px-4 py-2 text-sm text-ctp-subtext0 border-b border-ctp-surface1 rounded-t-lg" aria-hidden="true">
       Catppuccin
     </div>
@@ -38,15 +38,18 @@ const themes = [
     mocha: '🌿',
   };
 
+  const dropdown = document.getElementById('theme-dropdown');
+  const themeEmoji = dropdown?.querySelector('.theme-emoji');
+  const themeOptions = dropdown?.querySelectorAll('.theme-option') ?? [];
+
   function updateEmojiDisplay(theme) {
-    const themeEmoji = document.querySelector('.theme-emoji');
     if (themeEmoji) {
       themeEmoji.textContent = themeMap[theme] || '🌿';
     }
   }
 
   function updatePressedState(theme) {
-    document.querySelectorAll('.theme-option').forEach((btn) => {
+    themeOptions.forEach((btn) => {
       btn.setAttribute('aria-pressed', btn.getAttribute('data-theme') === theme ? 'true' : 'false');
     });
   }
@@ -59,8 +62,7 @@ const themes = [
     updateEmojiDisplay(theme);
     updatePressedState(theme);
 
-    const details = document.querySelector('details');
-    if (details) details.open = false;
+    if (dropdown) dropdown.open = false;
   }
 
   // Set initial emoji + pressed state based on current theme
@@ -68,7 +70,7 @@ const themes = [
   updateEmojiDisplay(currentTheme);
   updatePressedState(currentTheme);
 
-  document.querySelectorAll('.theme-option').forEach((btn) => {
+  themeOptions.forEach((btn) => {
     btn.addEventListener('click', () => {
       const theme = btn.getAttribute('data-theme');
       if (theme) applyTheme(theme);
@@ -77,9 +79,8 @@ const themes = [
 
   // Close dropdown when clicking outside
   document.addEventListener('click', (e) => {
-    const details = document.querySelector('details');
-    if (details && !details.contains(e.target)) {
-      details.open = false;
+    if (dropdown && !dropdown.contains(e.target)) {
+      dropdown.open = false;
     }
   });
 </script>

@@ -7,9 +7,9 @@ const isCurrent = (href: string) => (href === '/' ? path === '/' : path === href
 const ariaCurrent = (href: string) => (isCurrent(href) ? 'page' : undefined);
 ---
 
-<header class="border-b border-ctp-surface0 bg-ctp-base relative">
-  <nav class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between" aria-label="Primary">
-    <a href="/" class="logo-link h-10 px-2 -mx-2 rounded-md gap-0 sm:gap-2" aria-label="Tyler Rosnett — home">
+<header class="border-b border-ctp-surface0 bg-ctp-base flex justify-center">
+  <nav class="w-full max-w-4xl px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between relative" aria-label="Primary">
+    <a href="/" class="logo-link h-10 px-2 rounded-md gap-0 sm:gap-2" aria-label="Tyler Rosnett — home">
       <Logo variant="icon" />
       <span class="text-xl font-bold text-ctp-text hidden sm:inline">tyler rosnett</span>
     </a>
@@ -29,16 +29,16 @@ const ariaCurrent = (href: string) => (isCurrent(href) ? 'page' : undefined);
 
       <ThemeDropdown />
     </div>
-  </nav>
 
-  <div id="mobile-menu" class="hidden sm:hidden absolute top-[calc(100%+0.5rem)] right-4 w-44 bg-ctp-surface0 border border-ctp-surface1 rounded-lg shadow-xl z-50">
-    <div class="py-1">
-      <a href="/" aria-current={ariaCurrent('/')} class="block px-4 py-3 text-ctp-text hover:bg-ctp-surface1 first:rounded-t-lg transition-colors aria-[current=page]:text-ctp-mauve">about</a>
-      <a href="/blog" aria-current={ariaCurrent('/blog')} class="block px-4 py-3 text-ctp-text hover:bg-ctp-surface1 transition-colors aria-[current=page]:text-ctp-mauve">blog</a>
-      <a href="/repos" aria-current={ariaCurrent('/repos')} class="block px-4 py-3 text-ctp-text hover:bg-ctp-surface1 transition-colors aria-[current=page]:text-ctp-mauve">repos</a>
-      <a href="/cats" aria-current={ariaCurrent('/cats')} class="block px-4 py-3 text-ctp-text hover:bg-ctp-surface1 last:rounded-b-lg transition-colors aria-[current=page]:text-ctp-mauve">cats</a>
+    <div id="mobile-menu" class="hidden sm:hidden absolute top-[calc(100%+0.5rem)] right-4 sm:right-6 lg:right-8 w-44 bg-ctp-surface0 border border-ctp-surface1 rounded-lg shadow-xl z-50">
+      <div class="py-1">
+        <a href="/" aria-current={ariaCurrent('/')} class="block px-4 py-3 text-ctp-text hover:bg-ctp-surface1 first:rounded-t-lg transition-colors aria-[current=page]:text-ctp-mauve">about</a>
+        <a href="/blog" aria-current={ariaCurrent('/blog')} class="block px-4 py-3 text-ctp-text hover:bg-ctp-surface1 transition-colors aria-[current=page]:text-ctp-mauve">blog</a>
+        <a href="/repos" aria-current={ariaCurrent('/repos')} class="block px-4 py-3 text-ctp-text hover:bg-ctp-surface1 transition-colors aria-[current=page]:text-ctp-mauve">repos</a>
+        <a href="/cats" aria-current={ariaCurrent('/cats')} class="block px-4 py-3 text-ctp-text hover:bg-ctp-surface1 last:rounded-b-lg transition-colors aria-[current=page]:text-ctp-mauve">cats</a>
+      </div>
     </div>
-  </div>
+  </nav>
 </header>
 
 <style>
@@ -55,7 +55,7 @@ const ariaCurrent = (href: string) => (isCurrent(href) ? 'page' : undefined);
 <script>
   const menuToggle = document.getElementById('menu-toggle');
   const mobileMenu = document.getElementById('mobile-menu');
-  const themeDetails = document.querySelector('header details');
+  const themeDetails = document.getElementById('theme-dropdown');
 
   const setMenuOpen = (open: boolean) => {
     if (!mobileMenu || !menuToggle) return;
