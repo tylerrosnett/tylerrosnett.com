@@ -53,6 +53,8 @@ const ariaCurrent = (href: string) => (isCurrent(href) ? 'page' : undefined);
 </style>
 
 <script>
+  import { createMenuKeyHandler } from '../scripts/menu-keyboard';
+
   interface MobileMenuOptions {
     onOpen?: () => void;
   }
@@ -69,13 +71,16 @@ const ariaCurrent = (href: string) => (isCurrent(href) ? 'page' : undefined);
       this.items = Array.from(menu.querySelectorAll<HTMLAnchorElement>('a'));
       this.onOpenCallback = options.onOpen;
 
+      const keyHandler = createMenuKeyHandler(this.items, {
+        onEscape: () => this.close(),
+      });
+
       this.toggle.addEventListener('click', this.onToggleClick);
       this.items.forEach((item) => {
         item.addEventListener('click', this.onItemClick);
-        item.addEventListener('keydown', this.onItemKeydown);
+        item.addEventListener('keydown', keyHandler);
       });
       document.addEventListener('click', this.onDocClick);
-      document.addEventListener('keydown', this.onDocKeydown);
     }
 
     get isOpen(): boolean {
@@ -107,51 +112,12 @@ const ariaCurrent = (href: string) => (isCurrent(href) ? 'page' : undefined);
       this.close(false);
     };
 
-    private onItemKeydown = (e: KeyboardEvent): void => {
-      const idx = this.items.indexOf(e.target as HTMLAnchorElement);
-      if (idx === -1) return;
-      const last = this.items.length - 1;
-
-      switch (e.key) {
-        case 'ArrowDown':
-          e.preventDefault();
-          this.items[(idx + 1) % this.items.length]?.focus();
-          break;
-        case 'ArrowUp':
-          e.preventDefault();
-          this.items[(idx - 1 + this.items.length) % this.items.length]?.focus();
-          break;
-        case 'Home':
-          e.preventDefault();
-          this.items[0]?.focus();
-          break;
-        case 'End':
-          e.preventDefault();
-          this.items[last]?.focus();
-          break;
-        case 'Tab':
-          // Trap focus within the open menu.
-          if (e.shiftKey && idx === 0) {
-            e.preventDefault();
-            this.items[last]?.focus();
-          } else if (!e.shiftKey && idx === last) {
-            e.preventDefault();
-            this.items[0]?.focus();
-          }
-          break;
-      }
-    };
-
     private onDocClick = (e: MouseEvent): void => {
       if (!this.isOpen) return;
       const target = e.target as Node;
       if (!this.menu.contains(target) && !this.toggle.contains(target)) {
         this.close(false);
       }
-    };
-
-    private onDocKeydown = (e: KeyboardEvent): void => {
-      if (e.key === 'Escape' && this.isOpen) this.close();
     };
   }
 
