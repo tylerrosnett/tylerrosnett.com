@@ -18,20 +18,16 @@ const personLd = {
   description="Platform engineer and Go developer focused on developer experience, Kubernetes, cloud native, and supply chain security."
 >
   <script type="application/ld+json" set:html={JSON.stringify(personLd)} slot="head" />
-  <div class="flex items-center justify-center px-4 sm:px-6 lg:px-8 py-16">
-    <div class="max-w-2xl w-full text-center">
-      <Picture src={tylerImg} formats={['avif', 'webp']} alt="Tyler Rosnett, platform engineer" loading="eager" fetchpriority="high" widths={[192, 256, 320, 384, 512, 640]} sizes="(min-width: 768px) 320px, (min-width: 640px) 256px, 192px" class="w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 rounded-full mx-auto pb-8 object-cover shadow-lg" />
-      <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold text-ctp-text pb-6">hey, i'm tyler</h1>
-      <div class="pb-12 max-w-prose mx-auto text-lg text-ctp-subtext0 leading-8 space-y-4 text-center">
-        <p>
-          I'm a platform engineer and Go developer who's passionate about developer experience. I have deep expertise in Kubernetes, cloud native architecture, GitOps, and CI/CD. Recently, I've been learning about supply chain security (SLSA, SBOM, attestations).
-        </p>
-        <p>
-          Outside of work, you'll find me tinkering with my homelab, building home automation, playing chess, riding dirt bikes, or diving into CNCF projects.
-        </p>
-      </div>
-
-
+  <div class="w-full max-w-2xl flex flex-col items-center px-4 sm:px-6 lg:px-8 py-16 text-center">
+    <Picture src={tylerImg} formats={['avif', 'webp']} alt="Tyler Rosnett, platform engineer" loading="eager" fetchpriority="high" widths={[192, 256, 320, 384, 512, 640]} sizes="(min-width: 768px) 320px, (min-width: 640px) 256px, 192px" class="w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 rounded-full object-cover shadow-lg" />
+    <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold text-ctp-text pt-8">hey, i'm tyler</h1>
+    <div class="max-w-prose text-lg text-ctp-subtext0 leading-8 [&>*+*]:pt-4 text-center pt-6">
+      <p>
+        I'm a platform engineer and Go developer who's passionate about developer experience. I have deep expertise in Kubernetes, cloud native architecture, GitOps, and CI/CD. Recently, I've been learning about supply chain security (SLSA, SBOM, attestations).
+      </p>
+      <p>
+        Outside of work, you'll find me tinkering with my homelab, building home automation, playing chess, riding dirt bikes, or diving into CNCF projects.
+      </p>
     </div>
   </div>
 </Base>

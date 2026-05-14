@@ -44,19 +44,13 @@ const blogPostingLd = {
   publishedTime={post.data.date.toISOString()}
 >
   <script type="application/ld+json" set:html={JSON.stringify(blogPostingLd)} slot="head" />
-  <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <article class="w-full max-w-3xl px-4 sm:px-6 lg:px-8 py-16">
     <header class="pb-12">
       <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-ctp-text pb-4">{post.data.title}</h1>
       <p class="text-ctp-subtext0 text-lg">{formattedDate}</p>
     </header>
 
-    <div class="prose-ctp max-w-none
-                    [&_h2]:text-xl sm:[&_h2]:text-2xl [&_h2]:pt-8 [&_h2]:pb-4
-                    [&_h3]:text-lg sm:[&_h3]:text-xl [&_h3]:pt-6 [&_h3]:pb-3
-                    [&_p]:pb-4
-                    [&_ul]:space-y-2 [&_ul]:pb-4
-                    [&_ol]:space-y-2 [&_ol]:pb-4
-                    [&_pre]:pb-4">
+    <div class="prose-ctp max-w-none">
       <Content />
     </div>
 

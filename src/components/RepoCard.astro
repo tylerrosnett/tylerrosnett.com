@@ -15,7 +15,7 @@ const { name, description, url, language, stars, forks } = Astro.props;
   href={url}
   target="_blank"
   rel="noopener noreferrer"
-  class="block p-6 rounded-lg border border-ctp-surface0 hover:border-ctp-mauve hover:bg-ctp-surface0 transition-all"
+  class="block p-6 rounded-lg border border-ctp-surface0 hover:border-ctp-mauve hover:bg-ctp-surface0 hover:-translate-y-0.5 hover:shadow-lg transition duration-200"
 >
   <h2 class="text-lg font-semibold text-ctp-text pb-2">{name}</h2>
   {description && <p class="text-sm text-ctp-subtext1 pb-4 line-clamp-2">{description}</p>}

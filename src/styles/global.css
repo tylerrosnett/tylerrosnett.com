@@ -93,10 +93,14 @@ details summary::-webkit-details-marker {
 
   .prose-ctp a {
     color: var(--catppuccin-color-mauve);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
   }
 
   .prose-ctp a:hover {
     color: var(--catppuccin-color-lavender);
+    text-decoration-thickness: 2px;
   }
 
   .prose-ctp p {
@@ -141,5 +145,48 @@ details summary::-webkit-details-marker {
 
   .prose-ctp em {
     color: var(--catppuccin-color-subtext0);
+  }
+
+  .prose-ctp h1 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+
+  .prose-ctp h2 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+
+  .prose-ctp h3 {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+
+  @media (min-width: 640px) {
+    .prose-ctp h2 {
+      font-size: 1.5rem;
+      line-height: 2rem;
+    }
+
+    .prose-ctp h3 {
+      font-size: 1.25rem;
+    }
+  }
+
+  .prose-ctp > * + * {
+    padding-top: 1rem;
+  }
+
+  .prose-ctp > h2 {
+    padding-top: 2rem;
+  }
+
+  .prose-ctp > h3 {
+    padding-top: 1.5rem;
+  }
+
+  .prose-ctp ul > * + *,
+  .prose-ctp ol > * + * {
+    padding-top: 0.5rem;
   }
 }
