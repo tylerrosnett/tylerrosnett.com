@@ -76,11 +76,15 @@ const ogImageUrl = image ? new URL(image, Astro.site).toString() : undefined;
     <script>
       const skipLink = document.querySelector<HTMLAnchorElement>('.skip-link');
       const mainEl = document.getElementById('main');
-      skipLink?.addEventListener('click', () => {
+      skipLink?.addEventListener('click', (e) => {
         if (!mainEl) return;
-        mainEl.setAttribute('tabindex', '-1');
-        mainEl.focus({ preventScroll: true });
-        mainEl.addEventListener('blur', () => mainEl.removeAttribute('tabindex'), { once: true });
+        e.preventDefault();
+        const heading = mainEl.querySelector('h1, h2');
+        const target = heading instanceof HTMLElement ? heading : mainEl;
+        target.setAttribute('tabindex', '-1');
+        target.focus({ preventScroll: true });
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        target.addEventListener('blur', () => target.removeAttribute('tabindex'), { once: true });
       });
     </script>
 

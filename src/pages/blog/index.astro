@@ -11,31 +11,29 @@ const sortedPosts = posts.map(post => ({
 ---
 
 <Base title="Blog - Tyler Rosnett">
-  <div class="flex items-center justify-center px-4 sm:px-6 lg:px-8 py-16">
-    <div class="w-full max-w-2xl">
-      <div class="mb-12 text-center">
-        <h1 class="text-5xl font-bold text-ctp-text mb-6">blog</h1>
-        <div class="text-lg text-ctp-subtext0 leading-8">
-          <p>
-            I like to organize and record my thoughts on certain topics and reflect on how my views change over time. This blog is my attempt at publishing that process (so don't expect well-constructed articles).
-          </p>
-          <p class="mb-4">
-            The posts here are handwritten by me without any AI assistance. I'm not ready to outsource my own thoughts and feelings quite yet. Besides, if you wanted to know what the bots had to say, you would have just asked them.
-          </p>
-        </div>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="mb-12">
+      <h1 class="text-5xl font-bold text-ctp-text mb-6 text-center">blog</h1>
+      <div class="text-lg text-ctp-subtext0 leading-8 max-w-prose mx-auto space-y-4 text-center">
+        <p>
+          I like to organize and record my thoughts on certain topics and reflect on how my views change over time. This blog is my attempt at publishing that process (so don't expect well-constructed articles).
+        </p>
+        <p>
+          The posts here are handwritten by me without any AI assistance. I'm not ready to outsource my own thoughts and feelings quite yet. Besides, if you wanted to know what the bots had to say, you would have just asked them.
+        </p>
       </div>
-      <div class="space-y-6">
-        {
-          sortedPosts.map((post) => (
-            <PostCard
-              title={post.data.title}
-              date={post.data.date}
-              description={post.data.description}
-              slug={post.slug}
-            />
-          ))
-        }
-      </div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {
+        sortedPosts.map((post) => (
+          <PostCard
+            title={post.data.title}
+            date={post.data.date}
+            description={post.data.description}
+            slug={post.slug}
+          />
+        ))
+      }
     </div>
   </div>
 </Base>
