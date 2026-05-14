@@ -37,3 +37,6 @@ site/
 
 # Lighthouse raw reports
 .perf/
+
+# Draft blog posts
+src/content/blog/*.draft.md
