@@ -22,7 +22,7 @@ try {
   if (!response.ok) throw new Error(`GitHub API ${response.status}`);
   const data: Repo[] = await response.json();
   repos = data
-    .filter((r) => !r.fork)
+    .filter((r) => !r.fork && r.name !== 'tylerrosnett')
     .sort((a, b) => b.stargazers_count - a.stargazers_count);
 } catch (err) {
   console.error('Failed to fetch GitHub repos at build time:', err);
@@ -32,9 +32,8 @@ try {
 
 <Base title="Repos - Tyler Rosnett" description="My public GitHub repositories">
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-    <div class="mb-12">
-      <h1 class="text-5xl font-bold text-ctp-text mb-4">repositories</h1>
-      <p class="text-ctp-subtext0">public projects on github</p>
+    <div class="mb-12 text-center">
+      <h1 class="text-5xl font-bold text-ctp-text mb-6">repositories</h1>
     </div>
 
     {fetchFailed ? (
