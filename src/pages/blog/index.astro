@@ -10,7 +10,10 @@ const sortedPosts = posts.map(post => ({
 })).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
 
-<Base title="Blog - Tyler Rosnett">
+<Base
+  title="Blog - Tyler Rosnett"
+  description="Tyler Rosnett on platform engineering, Kubernetes, and GitOps."
+>
   <div class="w-full max-w-4xl px-4 sm:px-6 lg:px-8 py-16">
     <div class="pb-12 flex flex-col items-center">
       <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-ctp-text pb-6 text-center">blog</h1>

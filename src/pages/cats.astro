@@ -90,7 +90,10 @@ const photos = [
 ];
 ---
 
-<Base title="My Cats - Tyler Rosnett">
+<Base
+  title="My Cats - Tyler Rosnett"
+  description="Photos of Ori and Jun, Tyler Rosnett's cats."
+>
   <div class="w-full max-w-4xl px-4 sm:px-6 lg:px-8 py-16">
     <div class="pb-12 text-center">
       <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-ctp-text pb-6">my cats</h1>
@@ -184,6 +187,7 @@ const photos = [
     aspect-ratio: 1 / 1;
     border-radius: 0.5rem;
     overflow: hidden;
+    touch-action: pan-y;
   }
 
   .slide {
@@ -381,6 +385,7 @@ const photos = [
 
   if (slides.length > 0 && thumbs.length === slides.length) {
     let activeIndex = 0;
+    let suppressClick = false;
 
     const toggleAttr = (el: HTMLElement, attr: string, on: boolean, value = '') => {
       if (on) el.setAttribute(attr, value);
@@ -398,6 +403,35 @@ const photos = [
       thumbs[activeIndex]?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
     };
 
+    // Touch-swipe to change photos. Touch-only, so desktop click behavior is untouched.
+    // Listeners stay passive (no preventDefault) to preserve native scroll and pinch-zoom;
+    // a swipe is only registered when the gesture is clearly horizontal.
+    const addSwipe = (target: HTMLElement, onSwipe: (dir: 1 | -1) => void) => {
+      let startX = 0;
+      let startY = 0;
+      let tracking = false;
+      target.addEventListener('touchstart', (e) => {
+        const t = e.touches.length === 1 ? e.touches[0] : null;
+        tracking = t !== null;
+        suppressClick = false;
+        if (t) {
+          startX = t.clientX;
+          startY = t.clientY;
+        }
+      }, { passive: true });
+      target.addEventListener('touchend', (e) => {
+        if (!tracking) return;
+        tracking = false;
+        const t = e.changedTouches[0];
+        if (!t) return;
+        const dx = t.clientX - startX;
+        const dy = t.clientY - startY;
+        if (Math.abs(dx) < 40 || Math.abs(dx) <= Math.abs(dy)) return;
+        suppressClick = true;
+        onSwipe(dx < 0 ? 1 : -1);
+      }, { passive: true });
+    };
+
     const openLightboxAt = (index: number) => {
       show(index);
       if (dialog instanceof HTMLDialogElement) dialog.showModal();
@@ -405,6 +439,7 @@ const photos = [
 
     slides.forEach((slide) => {
       slide.addEventListener('click', () => {
+        if (suppressClick) return;
         const i = Number(slide.getAttribute('data-index') ?? 0);
         openLightboxAt(i);
       });
@@ -444,6 +479,9 @@ const photos = [
     slidePrev?.addEventListener('click', () => show(activeIndex - 1));
     slideNext?.addEventListener('click', () => show(activeIndex + 1));
 
+    const slideFrame = document.querySelector<HTMLElement>('.slide-frame');
+    if (slideFrame) addSwipe(slideFrame, (dir) => show(activeIndex + dir));
+
     // Page-level arrow keys so you can cycle photos without first focusing the hero.
     // Skip when the lightbox is open (it has its own handler), when an editable element
     // is focused, or when focus is on a thumb/slide (those have their own handlers).
@@ -466,6 +504,9 @@ const photos = [
       lightboxPrev?.addEventListener('click', () => show(activeIndex - 1));
       lightboxNext?.addEventListener('click', () => show(activeIndex + 1));
 
+      const lightboxSlidesEl = document.querySelector<HTMLElement>('.lightbox-slides');
+      if (lightboxSlidesEl) addSwipe(lightboxSlidesEl, (dir) => show(activeIndex + dir));
+
       document.addEventListener('keydown', (e) => {
         if (!dialog.open) return;
         if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
@@ -479,6 +520,7 @@ const photos = [
       });
 
       dialog.addEventListener('click', (e) => {
+        if (suppressClick) return;
         if (e.target === dialog) dialog.close();
       });
     }

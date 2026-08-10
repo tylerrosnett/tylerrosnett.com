@@ -32,7 +32,8 @@ const blogPostingLd = {
   headline: post.data.title,
   description: post.data.description,
   datePublished: post.data.date.toISOString(),
-  author: { '@type': 'Person', name: 'Tyler Rosnett', url: 'https://tylerrosnett.com' },
+  // References the canonical Person node the Base layout emits on every page.
+  author: { '@id': `${Astro.site}#person` },
   mainEntityOfPage: { '@type': 'WebPage', '@id': canonical },
 };
 ---
@@ -55,7 +56,7 @@ const blogPostingLd = {
     </div>
 
     <nav class="pt-24 border-t border-ctp-surface0">
-      <a href="/blog" class="text-ctp-mauve hover:text-ctp-lavender transition-colors">
+      <a href="/blog/" class="text-ctp-mauve hover:text-ctp-lavender transition-colors">
         ← Back to blog
       </a>
     </nav>
