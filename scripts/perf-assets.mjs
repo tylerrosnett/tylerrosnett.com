@@ -12,7 +12,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const distDir = join(root, 'dist');
-const ROUTES = ['/', '/blog', '/repos', '/cats', '/404'];
+const ROUTES = ['/', '/blog', '/repos', '/404'];
 const TOP_N = 8;
 
 if (!existsSync(distDir)) {

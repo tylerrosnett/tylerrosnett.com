@@ -8,7 +8,7 @@ Tracks Lighthouse measurements for the production build of tylerrosnett.com over
 - Serve: `npm run perf:serve` (astro preview on `127.0.0.1:4321`, no Cloudflare in front)
 - Measure: `npm run perf` — runs Lighthouse 13 against each page 3 times **per device (desktop and mobile)**, takes the median per metric, and writes raw reports to `.perf/<timestamp>/`. Reports are named `<page>-<device>-run<N>.json`; `summary.json` is a flat array with a `device` field.
 - Asset-only check: `npm run perf:assets` — fast post-build sanity check. No Lighthouse, no preview server. Prints total `dist/` size, breakdown by extension, per-route HTML+linked-asset weight, and the top-8 largest assets. Useful for catching bundle regressions without paying the full Lighthouse cost.
-- Pages tested: `/`, `/blog`, `/blog/hello-world`, `/cats`, `/repos`, `/resume`
+- Pages tested: `/`, `/blog`, `/blog/hello-world`, `/repos`, `/resume`
 
 Override with env vars: `BASE=...`, `PAGES=/,/blog`, `RUNS=5`, `DEVICES=desktop` (or `mobile`).
 
@@ -80,5 +80,4 @@ _(Append a row to History after each change. Note what changed and the delta.)_
 - [ ] Verify Tailwind output is tree-shaken (CSS bundle was 58 KB at baseline — re-check after a fresh build).
 - [ ] Consider an `_headers` / Workers cache config for `/_astro/*` (`immutable, max-age=31536000`). Out of scope for current local-only measurement.
 - [x] ~~Re-measure on a throttled mobile preset~~ — `npm run perf` now runs both desktop and mobile by default. Re-baseline mobile numbers next run.
-- [ ] `/cats`: investigate dropping `quality` on `cats-ori` further; the largest AVIF variant is still the page's biggest single asset.
 - [ ] Add a CI check that fails the build if any page drops below score 95 or LCP exceeds 1500 ms.

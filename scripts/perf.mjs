@@ -16,7 +16,7 @@ import lighthouse from 'lighthouse';
 
 const BASE = process.env.BASE || 'http://127.0.0.1:4321';
 const RUNS = Number(process.env.RUNS || 3);
-const PAGES = (process.env.PAGES || '/,/blog,/blog/hello-world,/cats,/repos').split(',');
+const PAGES = (process.env.PAGES || '/,/blog,/blog/hello-world,/repos').split(',');
 const DEVICES = (process.env.DEVICES || 'desktop,mobile').split(',');
 
 const ts = new Date().toISOString().replace(/[:.]/g, '-');

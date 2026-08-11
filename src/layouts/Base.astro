@@ -174,7 +174,7 @@ const personLd = {
         if (!href) return;
 
         const url = new URL(href, window.location.href);
-        // Trailing-slash-insensitive self-link check (prod serves /cats/, dev /cats).
+        // Trailing-slash-insensitive self-link check (prod serves /blog/, dev /blog).
         const normalizePath = (p: string) => p.replace(/\/$/, '') || '/';
         if (
           url.origin !== window.location.origin ||
